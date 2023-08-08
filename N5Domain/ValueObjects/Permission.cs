@@ -30,7 +30,7 @@ public class Permission : AggregateRoot
             PermissionTypeId = addDto.PermissionTypeId,
             EmployeeForename = addDto.EmployeeForename,
             EmployeeSurname = addDto.EmployeeSurname,
-            PermissionDate = addDto.PermissionDate,
+            PermissionDate = DateTime.Now,
         };
 
         return permission;

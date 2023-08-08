@@ -45,32 +45,6 @@ namespace N5Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-            migrationBuilder.InsertData(
-                table: "PermissionTypes",
-                columns: new[] { "Id", "Description" },
-                values: new object[,]
-                {
-                                { 1, "Vacation" },
-                                { 2, "Sick Leave" },
-                                { 3, "Maternity Leave" },
-                                { 4, "Paternity Leave" },
-                                { 5, "Bereavement Leave" },
-                                { 6, "Other" },
-                });
-            migrationBuilder.InsertData(
-                table: "Permissions",
-                columns: new[] { "Id", "PermissionDate", "EmployeeForename", "PermissionTypeId","EmployeeSurname" },
-                values: new object[,]
-                {
-                                { 1, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5718), "ForeName 1 ", 1, "SurName 1 " },
-                                { 2, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5730), "ForeName 2 ", 1, "SurName 2 " },
-                                { 3, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5732), "ForeName 3 ", 2, "SurName 3 " },
-                                { 4, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5733), "ForeName 4 ", 3, "SurName 4 " },
-                                { 5, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5732), "ForeName 5 ", 2, "SurName 5 " },
-                                { 6, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5733), "ForeName 6 ", 3, "SurName 6 " },
-                                { 7, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5732), "ForeName 7 ", 2, "SurName 7 " },
-                                { 8, new DateTime(2023, 7, 26, 9, 27, 38, 730, DateTimeKind.Local).AddTicks(5733), "ForeName 8 ", 3, "SurName 8 " }
-                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Permissions_PermissionTypeId",

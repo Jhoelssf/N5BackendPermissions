@@ -1,9 +1,9 @@
 version: '3.4'
 
 services:
-    sqlserver:
+    sqlserver-develop:
         image: mcr.microsoft.com/mssql/server:2019-latest
-        container_name: sqlserver
+        container_name: sqlserver-develop
         ports:
             - 1433:1433
         environment:
@@ -13,31 +13,31 @@ services:
         volumes:
             - sqldata:/var/opt/mssql
         networks:
-            - dev
+            - develop
 
-    zookeeper:
+    zookeeper-develop:
         image: confluentinc/cp-zookeeper:latest
-        container_name: zookeeper
+        container_name: zookeeper-develop
         environment:
             ZOOKEEPER_CLIENT_PORT: 2181
             ZOOKEEPER_TICK_TIME: 2000
         ports:
             - 2181:2181
         networks:
-            - dev
+            - develop
         volumes:
             - zk_data:/var/lib/zookeeper/data
             - zk_log:/var/lib/zookeeper/log
 
-    kafka:
+    kafka-develop:
         image: confluentinc/cp-kafka:latest
-        container_name: kafka
+        container_name: kafka-develop
         ports:
             - 29092:29092
         environment:
             KAFKA_BROKER_ID: 1
-            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29092
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper-develop:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-develop:9092,PLAINTEXT_HOST://localhost:29092
             KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
             KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -45,13 +45,13 @@ services:
         volumes:
             - k_secrets:/etc/kafka/secrets
         networks:
-            - dev
+            - develop
         depends_on:
-            - zookeeper
+            - zookeeper-develop
 
-    elasticsearch:
+    elasticsearch-develop:
         image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
-        container_name: elasticsearch
+        container_name: elasticsearch-develop
         environment:
             - node.name=elasticsearch
             - cluster.name=es-docker-cluster
@@ -67,42 +67,37 @@ services:
         ports:
             - 9200:9200
         networks:
-            - dev
+            - develop
 
-    kibana:
+    kibana-develop:
         image: docker.elastic.co/kibana/kibana:7.9.0
-        container_name: kibana
+        container_name: kibana-develop
         ports:
             - 5601:5601
         networks:
-            - dev
+            - develop
         environment:
-            ELASTICSEARCH_URL: http://elasticsearch:9200
-            ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+            ELASTICSEARCH_URL: http://localhost:9200
+            ELASTICSEARCH_HOSTS: http://elasticsearch-develop:9200
         depends_on:
-            - elasticsearch
+            - elasticsearch-develop
 
-    n5api:
-        image: ${DOCKER_REGISTRY-}n5api
+    kafka-ui-develop:
+        image: provectuslabs/kafka-ui:latest
+        container_name: kafka-ui-develop
         ports:
-            - 8080:443
-            - 8081:80
-        build:
-            context: .
-            dockerfile: N5Api/Dockerfile
+            - 8080:8080
         environment:
-            - ConnectionStrings__DefaultConnection=Database=dbtest;User Id=sa;Password=Ch411eng3;TrustServerCertificate=true;MultipleActiveResultSets=True;Server=sqlserver,1433
-            - Kafka__Server=kafka:29092
-            - Topics__Permissions=Permissions
-            - ElasticConfiguration__N5Index=n5_elastic_index
-            - ElasticConfiguration__Uri=http://elasticsearch:9200
-            - ASPNETCORE_URLS=http://+:80
-        depends_on:
-            - elasticsearch
-            - kafka
-            - sqlserver
+            KAFKA_CLUSTERS_0_NAME: my-kafka-cluster
+            KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-develop:9092
+            KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-develop:2181
+            KAFKA_CLUSTERS_0_JMX: "false"
+            KAFKA_CLUSTERS_0_SECURITYPROTOCOL: PLAINTEXT
+            KAFKA_CLUSTERS_0_SASLMECHANISM: ""
+            KAFKA_CLUSTERS_0_SASLUSERNAME: ""
+            KAFKA_CLUSTERS_0_SASLPASSWORD: ""
         networks:
-            - dev
+            - develop
 
 volumes:
     elastic_data:
@@ -113,5 +108,5 @@ volumes:
 
 
 networks:
-    dev:
+    develop:
         driver: bridge

@@ -8,7 +8,7 @@ using N5Domain.Repositories;
 
 namespace N5Application.Commands;
 
-public record struct CreatePermissionCommand(string EmployeeForename, string EmployeeSurname, int PermissionTypeId) : MediatR.IRequest<Response<CreatePermissionResponse>>
+public record struct CreatePermissionCommand(string EmployeeForename, string EmployeeSurname, int PermissionTypeId) : IRequest<Response<CreatePermissionResponse>>
 {
 }
 

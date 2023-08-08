@@ -9,6 +9,7 @@ public static class DatabaseInitial
     {
         using var serviceScope = app.ApplicationServices.CreateScope();
         Migrate(serviceScope.ServiceProvider.GetService<ApplicationDbContext>());
+        Seed(serviceScope.ServiceProvider.GetService<ApplicationDbContext>());
     }
 
     private static void Migrate(ApplicationDbContext context)
@@ -16,5 +17,12 @@ public static class DatabaseInitial
         System.Console.WriteLine("Starting database migration...");
         context.Database.Migrate();
         System.Console.WriteLine("Database migration completed.");
+    }
+
+    private static void Seed(ApplicationDbContext context)
+    {
+        System.Console.WriteLine("Starting database seeding...");
+        AddDbInitializer.Seed(context);
+        System.Console.WriteLine("Database seeding completed.");
     }
 }
